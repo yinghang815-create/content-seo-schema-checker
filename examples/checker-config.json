@@ -1,0 +1,14 @@
+{
+  "thresholds": {
+    "title_min": 25,
+    "title_max": 65,
+    "description_min": 70,
+    "description_max": 165,
+    "content_units_min": 250
+  },
+  "required_schema_types": ["Article"],
+  "disabled_rules": [],
+  "severity_overrides": {
+    "canonical.missing": "error"
+  }
+}

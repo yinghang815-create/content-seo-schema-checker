@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.wheel-test/
+venv/
+dist/
+build/
+.pytest_cache/
+.coverage
+*.sarif
+seo-report.json

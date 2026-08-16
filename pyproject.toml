@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "content-seo-schema-checker"
+version = "0.1.0"
+description = "Pre-publish SEO and JSON-LD schema validation for HTML, Markdown, and WordPress content."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+  { name = "Yinghang", email = "yinghang815-create@users.noreply.github.com" }
+]
+keywords = [
+  "seo-checker",
+  "schema-validator",
+  "json-ld",
+  "structured-data",
+  "wordpress",
+  "content-quality",
+  "pre-publish",
+  "sarif",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Internet :: WWW/HTTP :: Site Management",
+  "Topic :: Text Processing :: Markup :: HTML",
+]
+
+[project.scripts]
+seo-schema-check = "content_seo_checker.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yinghang815-create/content-seo-schema-checker"
+Repository = "https://github.com/yinghang815-create/content-seo-schema-checker"
+Issues = "https://github.com/yinghang815-create/content-seo-schema-checker/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/content_seo_checker"]

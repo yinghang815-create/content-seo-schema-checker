@@ -1,0 +1,26 @@
+name: Rule request
+description: Propose a deterministic pre-publish check
+title: "[Rule]: "
+labels: ["enhancement", "rule"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Publishing risk
+      description: What production issue should this rule prevent?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Authoritative evidence
+      description: Link to applicable search-engine or schema.org documentation.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Proposed rule behavior
+      description: Describe inputs, rule ID, severity, and false-positive controls.
+    validations:
+      required: true

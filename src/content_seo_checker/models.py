@@ -45,6 +45,11 @@ class Document:
     schemas: list[Any] = field(default_factory=list)
     schema_errors: list[str] = field(default_factory=list)
     content_units: int = 0
+    body_text: str = ""
+    hreflang: list[dict[str, str]] = field(default_factory=list)
+    list_count: int = 0
+    table_count: int = 0
+    blockquote_count: int = 0
     wordpress: dict[str, Any] = field(default_factory=dict)
 
 

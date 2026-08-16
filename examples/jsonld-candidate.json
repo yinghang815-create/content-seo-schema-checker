@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@id": "https://example.com/guide#article",
+  "@type": "Article",
+  "headline": "Updated Importer Compliance Guide",
+  "dateModified": "2026-08-16"
+}

@@ -58,6 +58,42 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual("2.1.0", sarif["version"])
 
+    def test_jsonld_diff_subcommand(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            baseline = root / "before.json"
+            candidate = root / "after.json"
+            baseline.write_text(
+                '{"@id":"#article","@type":"Article","headline":"Guide","author":{"name":"A"}}',
+                encoding="utf-8",
+            )
+            candidate.write_text(
+                '{"@id":"#article","@type":"Article","headline":"Guide"}',
+                encoding="utf-8",
+            )
+            completed = self.run_cli(
+                "jsonld-diff",
+                str(baseline),
+                str(candidate),
+                "--report",
+                "json",
+                "--fail-on",
+                "warning",
+                expected=1,
+            )
+        self.assertIn("jsonld_diff.property_removed", completed.stdout)
+
+    def test_geo_content_subcommand(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "weak.html"
+            source.write_text(
+                "<h1>Guide</h1><p>In 2026, usage reached 75%.</p>", encoding="utf-8"
+            )
+            completed = self.run_cli(
+                "geo-content", str(source), "--report", "json", expected=1
+            )
+        self.assertIn("geo.numeric_claim_unsourced", completed.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

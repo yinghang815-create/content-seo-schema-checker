@@ -36,6 +36,13 @@ Rule IDs are stable identifiers used in console, JSON, and SARIF reports.
 | `wordpress.featured_media_missing` | warning | WordPress featured media is empty |
 | `input.parse_failed` | error | Input could not be decoded or parsed |
 
+Advanced command rule families are documented in
+[advanced-checks.md](advanced-checks.md):
+
+- `jsonld_diff.*` for structured-data regressions;
+- `hreflang.*` for language/canonical clusters;
+- `geo.*` for source, authorship, freshness, and citable content structure.
+
 ## Content units
 
 Whitespace-separated Latin words and individual CJK characters both count as

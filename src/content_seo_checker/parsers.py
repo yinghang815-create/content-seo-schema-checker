@@ -25,12 +25,16 @@ class _ContentHTMLParser(HTMLParser):
         self.lang: str | None = None
         self.meta: dict[str, str] = {}
         self.canonical: str | None = None
+        self.hreflang: list[dict[str, str]] = []
         self.images: list[dict[str, Any]] = []
         self.links: list[dict[str, Any]] = []
         self.headings: list[tuple[int, str, int | None]] = []
         self.schemas: list[Any] = []
         self.schema_errors: list[str] = []
         self.text_parts: list[str] = []
+        self.list_count = 0
+        self.table_count = 0
+        self.blockquote_count = 0
         self._ignored_depth = 0
         self._schema_parts: list[str] | None = None
 
@@ -51,6 +55,17 @@ class _ContentHTMLParser(HTMLParser):
             rel = (attributes.get("rel") or "").lower().split()
             if "canonical" in rel:
                 self.canonical = attributes.get("href")
+            if (
+                "alternate" in rel
+                and attributes.get("hreflang")
+                and attributes.get("href")
+            ):
+                self.hreflang.append(
+                    {
+                        "lang": str(attributes["hreflang"]).strip(),
+                        "href": str(attributes["href"]).strip(),
+                    }
+                )
         elif tag in {f"h{level}" for level in range(1, 7)}:
             self.heading_level = int(tag[1])
             self.heading_line = line
@@ -65,6 +80,12 @@ class _ContentHTMLParser(HTMLParser):
             )
         elif tag == "a":
             self.links.append({"href": attributes.get("href"), "line": line})
+        if tag in {"ol", "ul"}:
+            self.list_count += 1
+        elif tag == "table":
+            self.table_count += 1
+        elif tag == "blockquote":
+            self.blockquote_count += 1
         if tag in {"script", "style", "noscript"}:
             self._ignored_depth += 1
         if (
@@ -170,6 +191,11 @@ def _parse_html(source: str, text: str, input_format: str) -> Document:
         schemas=parser.schemas,
         schema_errors=parser.schema_errors,
         content_units=_content_units(" ".join(parser.text_parts)),
+        body_text=_clean_text(" ".join(parser.text_parts)),
+        hreflang=parser.hreflang,
+        list_count=parser.list_count,
+        table_count=parser.table_count,
+        blockquote_count=parser.blockquote_count,
     )
 
 
@@ -223,6 +249,16 @@ def _parse_markdown(source: str, text: str) -> Document:
     plain = re.sub(r"`[^`]*`", " ", plain)
     plain = re.sub(r"!?\[([^\]]*)\]\([^)]+\)", r"\1", plain)
     plain = re.sub(r"[#>*_~-]", " ", plain)
+    hreflang = _front_matter_hreflang(front_matter.get("hreflang"))
+    list_count = sum(
+        1 for line in body.splitlines() if re.match(r"^\s*(?:[-+*]|\d+\.)\s+", line)
+    )
+    table_count = sum(
+        1 for line in body.splitlines() if re.match(r"^\s*\|?.+\|.+\|?\s*$", line)
+    )
+    blockquote_count = sum(
+        1 for line in body.splitlines() if re.match(r"^\s*>\s+", line)
+    )
     return Document(
         source=source,
         input_format="markdown",
@@ -238,6 +274,11 @@ def _parse_markdown(source: str, text: str) -> Document:
         schemas=schemas,
         schema_errors=schema_errors,
         content_units=_content_units(plain),
+        body_text=_clean_text(plain),
+        hreflang=hreflang + embedded.hreflang,
+        list_count=list_count + embedded.list_count,
+        table_count=table_count + embedded.table_count,
+        blockquote_count=blockquote_count + embedded.blockquote_count,
     )
 
 
@@ -333,6 +374,21 @@ def _rendered(value: Any) -> str:
     if isinstance(value, dict):
         return str(value.get("rendered") or value.get("raw") or "")
     return str(value or "")
+
+
+def _front_matter_hreflang(value: Any) -> list[dict[str, str]]:
+    entries: list[dict[str, str]] = []
+    if isinstance(value, dict):
+        entries.extend(
+            {"lang": str(language), "href": str(href)}
+            for language, href in value.items()
+            if href
+        )
+    elif isinstance(value, list):
+        for item in value:
+            if isinstance(item, dict) and item.get("lang") and item.get("href"):
+                entries.append({"lang": str(item["lang"]), "href": str(item["href"])})
+    return entries
 
 
 def _strip_html(value: str) -> str:

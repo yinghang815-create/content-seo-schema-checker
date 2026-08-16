@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "content-seo-schema-checker"
-version = "0.1.0"
+version = "0.2.0"
 description = "Pre-publish SEO and JSON-LD schema validation for HTML, Markdown, and WordPress content."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -21,6 +21,9 @@ keywords = [
   "content-quality",
   "pre-publish",
   "sarif",
+  "hreflang",
+  "geo-content",
+  "jsonld-diff",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -38,6 +41,9 @@ classifiers = [
 
 [project.scripts]
 seo-schema-check = "content_seo_checker.cli:main"
+jsonld-diff-check = "content_seo_checker.cli:jsonld_diff_entry"
+hreflang-canonical-check = "content_seo_checker.cli:hreflang_entry"
+geo-content-lint = "content_seo_checker.cli:geo_content_entry"
 
 [project.urls]
 Homepage = "https://github.com/yinghang815-create/content-seo-schema-checker"

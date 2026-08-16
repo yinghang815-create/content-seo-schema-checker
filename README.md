@@ -12,6 +12,9 @@ It scans local HTML, Markdown with front matter, WordPress REST API payloads,
 and standalone JSON-LD. Reports are available as readable terminal output,
 JSON, or SARIF for GitHub Code Scanning.
 
+Version 0.2.0 also includes semantic JSON-LD diffing, cross-page
+hreflang/canonical validation, and a deterministic GEO content linter.
+
 ## Why run checks before publication?
 
 Browser-based SEO tools usually inspect a page after deployment. At that point,
@@ -55,6 +58,17 @@ Validate a WordPress REST payload explicitly:
 ```bash
 seo-schema-check draft-post.json --input-format wordpress
 ```
+
+Run the advanced pre-publish checks:
+
+```bash
+seo-schema-check jsonld-diff before.json after.json --fail-on warning
+seo-schema-check hreflang-canonical localized-pages/
+seo-schema-check geo-content article.html --fail-on warning
+```
+
+They are also installed as `jsonld-diff-check`, `hreflang-canonical-check`,
+and `geo-content-lint`. See [advanced checks](docs/advanced-checks.md).
 
 Exit codes are designed for automation:
 
@@ -190,5 +204,5 @@ a pull request or reporting a vulnerability.
 
 ## Status
 
-Version 0.1.0 is an alpha release. Rule IDs are intended to remain stable, but
+Version 0.2.0 is an alpha release. Rule IDs are intended to remain stable, but
 the configuration surface may evolve before 1.0.

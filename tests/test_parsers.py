@@ -100,6 +100,20 @@ schema: {"@context":"https://schema.org","@type":"Article","headline":"Importer 
             detect_format("schema.json", '{"@type":"Article"}', "auto"),
         )
 
+    def test_html_extracts_hreflang_and_citable_structures(self) -> None:
+        html = """
+        <link rel="alternate" hreflang="en" href="https://example.com/en">
+        <ul><li>One</li></ul><table><tr><td>Two</td></tr></table><blockquote>Three</blockquote>
+        """
+        document = parse_document("page.html", html, "html")
+        self.assertEqual(
+            [{"lang": "en", "href": "https://example.com/en"}], document.hreflang
+        )
+        self.assertEqual(
+            (1, 1, 1),
+            (document.list_count, document.table_count, document.blockquote_count),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

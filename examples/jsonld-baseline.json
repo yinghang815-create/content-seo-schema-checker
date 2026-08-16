@@ -1,0 +1,8 @@
+{
+  "@context": "https://schema.org",
+  "@id": "https://example.com/guide#article",
+  "@type": "Article",
+  "headline": "Importer Compliance Guide",
+  "author": {"@type": "Person", "name": "Editor"},
+  "dateModified": "2026-08-16"
+}
